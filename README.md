@@ -1,3 +1,5 @@
+[English](README.md) | [简体中文](README_zh-CN.md)
+
 # Grass AI-genomics readiness framework — executable companion
 
 This repository accompanies the manuscript *"AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions"* (Luo L, Sun Z, Lin Z, et al.). It provides an executable implementation of the readiness framework so that readers can inspect the manuscript-reported reference assessments and apply the same rubric to new use cases.
