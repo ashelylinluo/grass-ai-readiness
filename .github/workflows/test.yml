@@ -1,0 +1,32 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  reproducibility:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile Python scripts
+        run: python -m compileall grass-ai-readiness/scripts
+
+      - name: Reproduce reference and boundary rows
+        run: |
+          python grass-ai-readiness/scripts/assign_tier.py \
+            --selftest \
+            grass-ai-readiness/references/anchor-cases.tsv \
+            grass-ai-readiness/references/synthetic-boundary-tests.tsv
+
+      - name: Run validator reference regression
+        run: python grass-ai-readiness/scripts/validate_assessment.py --references grass-ai-readiness/references

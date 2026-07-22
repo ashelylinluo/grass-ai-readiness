@@ -2,6 +2,8 @@
 
 # 草类 AI 基因组学证据成熟度框架：可执行配套资源
 
+[![tests](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml/badge.svg)](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml)
+
 本仓库配套稿件 *"AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions"*（Luo L, Sun Z, Lin Z, et al.）。它提供了证据成熟度框架的可执行实现，使读者能够检查稿件报告的参考评估，并将同一套评价准则应用到新的用例。
 
 该框架围绕草类/禾本科（grass/Poaceae）基因组学中的任何 AI 或生物信息学结果提出一个核心问题：**它能支持一项决策、只能指导一个假设，还是仍然需要基准验证？** 一个工具并不是因为总体表现好就已经“就绪”；只有当证据确实支撑其所声称的具体物种、任务和用户行动时，才可认为它达到相应成熟度。成熟度以特定用例为单位分配为 **tier**：
@@ -11,6 +13,38 @@
 - **Tier 3 — 需要基准验证（benchmark-required）：** 技术上有潜力，但在使用前仍需要更强的任务特异性验证。
 
 tier 是由应用于四个证据门（evidence gates）的有序决策规则推导而来，而不是平均分或总体质量分。四个 evidence gates 分别是：直接草类验证（Direct grass validation）、输入透明度（Input transparency）、基准充分性（Benchmark adequacy）和可访问性与复用性（Accessibility and reuse）。在当前证据快照（2026-07-08）中，18个 reference use cases 的结果为 **0 Tier 1 / 15 Tier 2 / 3 Tier 3**。
+
+---
+
+## 快速复现检查（Quick reproducibility check）
+
+克隆仓库：
+
+```bash
+git clone https://github.com/ashelylinluo/grass-ai-readiness.git
+cd grass-ai-readiness
+```
+
+编译 Python 脚本：
+
+```bash
+python -m compileall grass-ai-readiness/scripts
+```
+
+复现 18 个 reference assessments 和 10 个 synthetic boundary tests：
+
+```bash
+python grass-ai-readiness/scripts/assign_tier.py \
+  --selftest \
+  grass-ai-readiness/references/anchor-cases.tsv \
+  grass-ai-readiness/references/synthetic-boundary-tests.tsv
+```
+
+预期输出：
+
+```text
+28/28 rows reproduce — all consistent.
+```
 
 ---
 

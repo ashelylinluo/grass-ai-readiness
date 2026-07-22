@@ -2,6 +2,8 @@
 
 # Grass AI-genomics readiness framework — executable companion
 
+[![tests](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml/badge.svg)](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml)
+
 This repository accompanies the manuscript *"AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions"* (Luo L, Sun Z, Lin Z, et al.). It provides an executable implementation of the readiness framework so that readers can inspect the manuscript-reported reference assessments and apply the same rubric to new use cases.
 
 The framework asks a single question about any AI or bioinformatics result in grass/Poaceae genomics: **can it support a decision, only guide a hypothesis, or does it still need benchmarking?** A tool is not ready because it scores well — it is ready only when the evidence holds for the exact species, task, and user action claimed. Readiness is assigned as a use-case-specific **tier**:
@@ -11,6 +13,38 @@ The framework asks a single question about any AI or bioinformatics result in gr
 - **Tier 3 — benchmark-required:** technically promising, but stronger task-specific validation is required first.
 
 The tier is *derived from ordered decision rules applied to four evidence gates* — Direct grass validation, Input transparency, Benchmark adequacy, and Accessibility and reuse — never an average or an overall quality score. In the current evidence snapshot (2026-07-08), the 18 reference use cases are **0 Tier 1 / 15 Tier 2 / 3 Tier 3**.
+
+---
+
+## Quick reproducibility check
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ashelylinluo/grass-ai-readiness.git
+cd grass-ai-readiness
+```
+
+Compile the Python scripts:
+
+```bash
+python -m compileall grass-ai-readiness/scripts
+```
+
+Reproduce the 18 reference assessments and 10 synthetic boundary tests:
+
+```bash
+python grass-ai-readiness/scripts/assign_tier.py \
+  --selftest \
+  grass-ai-readiness/references/anchor-cases.tsv \
+  grass-ai-readiness/references/synthetic-boundary-tests.tsv
+```
+
+Expected output:
+
+```text
+28/28 rows reproduce — all consistent.
+```
 
 ---
 
