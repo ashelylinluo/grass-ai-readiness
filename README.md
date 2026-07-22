@@ -158,8 +158,15 @@ If you use this framework or its implementation, please cite the archived record
 
 ---
 
-## Suggested wording for the manuscript's Data availability statement
+## Availability
 
-> The literature-mapping records and supplementary assessment data are archived on Zenodo (doi:10.5281/zenodo.20825481). The executable companion to the readiness framework is publicly available in the project repository and archived as a versioned software release on Zenodo (doi:[SOFTWARE DOI]). The release includes the manuscript-defined four-gate rubric and 18 expert-curated reference use-case assessments, a browser-based interactive assessor, deterministic tier-assignment scripts, synthetic boundary tests, and an Agent Skill for evaluating new use cases.
+The literature-mapping records and supplementary assessment data supporting the review are archived on Zenodo at https://doi.org/10.5281/zenodo.20825481.
 
-*Replace `[SOFTWARE DOI]` with the DOI minted for the GitHub release before inserting this statement into the manuscript.*
+The executable companion to the readiness framework is publicly available in this repository. It includes:
+
+* the manuscript-defined four-gate rubric;
+* 18 expert-curated reference use-case assessments;
+* a browser-based interactive assessor;
+* deterministic tier-assignment scripts;
+* synthetic boundary tests covering all decision-rule paths; and
+* an Agent Skill for evaluating new use cases.
