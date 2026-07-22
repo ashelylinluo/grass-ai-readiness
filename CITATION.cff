@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+title: >-
+  Grass AI-genomics readiness framework — executable companion
+message: >-
+  If you use this framework or its implementation, please cite this software.
+  A versioned software DOI will be added after the GitHub release is archived
+  on Zenodo; the related supplementary-data record is doi:10.5281/zenodo.20825481.
+type: software
+authors:
+  - given-names: Lin
+    family-names: Luo
+  - given-names: Zhongze
+    family-names: Sun
+  - given-names: Zhanxi
+    family-names: Lin
+  - given-names: Fangjie
+    family-names: Zhu
+  - given-names: Dong
+    family-names: Fan
+  - given-names: Dongmei
+    family-names: Lin
+repository-code: "https://github.com/ashelylinluo/grass-ai-readiness"
+abstract: >-
+  An executable companion to the manuscript-defined readiness framework for
+  AI-driven grass/Poaceae genomics. It assigns a use-case-specific readiness
+  tier (Tier 1 decision-support ready, Tier 2 hypothesis-guiding, Tier 3
+  benchmark-required) from four evidence gates (direct grass validation, input
+  transparency, benchmark adequacy, accessibility and reuse) using deterministic
+  ordered decision rules. Includes a browser-based interactive assessor, an
+  Agent Skill for evaluating new use cases, 18 expert-curated reference
+  assessments, and synthetic boundary tests that verify all rule paths.
+keywords:
+  - grass genomics
+  - Poaceae
+  - readiness assessment
+  - genomic prediction
+  - foundation models
+  - benchmarking
+  - reproducibility
+license: MIT
+license-url: "https://opensource.org/licenses/MIT"
+version: "1.0.0"

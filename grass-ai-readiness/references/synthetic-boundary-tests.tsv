@@ -1,0 +1,11 @@
+id	dv	it	ba	ar	leakage	action	expected_tier
+S01	ND	P	P	P	No	decision	Tier 2
+S02	P	P	ND	P	No	decision	Tier 2
+S03	P	P	P	P	No	decision	Tier 1
+S04	P	P	P	P	No	explore	Tier 2
+S05	P	P	P	P	Yes	decision	Tier 3
+S06	P	P	P	P	Not assessed	decision	Tier 3
+S07	ND	P	ND	P	No	explore	Tier 3
+S08	P	ND	P	P	No	decision	Tier 2
+S09	P	P	P	ND	No	decision	Tier 2
+S10	P	P	Pa	P	No	decision	Tier 2

@@ -1,0 +1,24 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+This licence applies to the data and text components of this repository:
+the readiness rubric text (references/rubric-definitions.md), the 18
+expert-curated reference use-case assessments (references/anchor-cases.md and
+anchor-cases.tsv), the synthetic boundary tests
+(references/synthetic-boundary-tests.md and .tsv), and any assessment content
+derived from the accompanying manuscript's supplementary materials.
+
+The software components (Python scripts and the interactive assessor) are
+licensed separately under the MIT License — see LICENSE.
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit, provide a link to the
+licence, and indicate if changes were made.
+
+Full licence text: https://creativecommons.org/licenses/by/4.0/legalcode
+Summary: https://creativecommons.org/licenses/by/4.0/
+
+Attribution:
+Luo L, Sun Z, Lin Z, et al. Supplementary data and literature-mapping records
+for "AI-driven grass genomics: a user-centric and evidence-guided roadmap from
+bioinformatics resources to breeding decisions". Version 1.1. Zenodo, 2026.
+doi:10.5281/zenodo.20825481

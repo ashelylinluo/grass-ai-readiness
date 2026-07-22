@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grass AI-Genomics Readiness Assessor</title>
+<style>
+:root{
+  --ink:#12161c; --ink-2:#2b333d; --paper:#f6f4ee; --paper-2:#ece8dd;
+  --line:#d7d0c2; --line-2:#c3bba9;
+  --t1:#2f8f5b; --t1-bg:#e4f2ea; --t1-line:#8fc9aa;
+  --t2:#c68a1a; --t2-bg:#f6ecd6; --t2-line:#e0c07e;
+  --t3:#6b52a3; --t3-bg:#ece7f4; --t3-line:#b3a2d6;
+  --nd:#b23a48; --pa:#c68a1a; --p:#2f8f5b;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --sans:'Inter','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans); background:var(--paper); color:var(--ink);
+  line-height:1.55; font-size:15px; letter-spacing:-0.006em;
+  padding:0 0 80px;
+}
+@media (prefers-reduced-motion:no-preference){
+  .fade{animation:fade .5s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+}
+.wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+
+/* ---- Masthead ---- */
+header{border-bottom:1.5px solid var(--ink);background:var(--paper)}
+.mast{padding:30px 0 22px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.eyebrow .dot{width:6px;height:6px;background:var(--ink);border-radius:50%}
+h1{font-size:clamp(26px,4.4vw,42px);line-height:1.02;font-weight:800;letter-spacing:-0.02em;max-width:20ch}
+.sub{margin-top:16px;max-width:64ch;color:var(--ink-2);font-size:15.5px}
+.metarow{margin-top:20px;display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--line-2);border-radius:2px;overflow:hidden;font-family:var(--mono);font-size:12px}
+.metarow div{padding:9px 15px;border-right:1px solid var(--line-2);background:var(--paper-2)}
+.metarow div:last-child{border-right:0}
+.metarow b{color:var(--ink);font-weight:600}
+.metarow span{color:var(--ink-2)}
+
+/* ---- Tabs ---- */
+.tabs{display:flex;gap:2px;margin-top:26px}
+.tab{font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;padding:10px 18px;border:1px solid var(--line-2);border-bottom:none;background:var(--paper-2);color:var(--ink-2);cursor:pointer;border-radius:3px 3px 0 0;position:relative;top:1px}
+.tab[aria-selected="true"]{background:var(--paper);color:var(--ink);font-weight:600;border-color:var(--ink);border-bottom:1.5px solid var(--paper)}
+.tab:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+
+section.panel{padding-top:34px}
+[hidden]{display:none!important}
+
+/* ---- Assessor layout ---- */
+.assessor{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:start}
+@media(max-width:860px){.assessor{grid-template-columns:1fr;gap:26px}}
+
+.step-lead{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:6px}
+.gate{border:1px solid var(--line);border-radius:4px;background:#fff;padding:16px 18px;margin-bottom:12px;transition:border-color .2s}
+.gate.crit{border-left:3px solid var(--ink)}
+.gate-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:11px}
+.gate-name{font-weight:700;font-size:15px}
+.gate-name .g{font-family:var(--mono);font-size:11px;color:var(--ink-2);font-weight:500;margin-right:7px}
+.gate-tag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--nd);border:1px solid var(--t3-line);padding:2px 6px;border-radius:2px;background:var(--t3-bg);white-space:nowrap}
+.gate-desc{font-size:13px;color:var(--ink-2);margin-bottom:12px;line-height:1.45}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 4px;border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);border-radius:3px;cursor:pointer;transition:all .13s}
+.seg button:hover{border-color:var(--ink-2)}
+.seg button:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+.seg button.on[data-v="P"]{background:var(--t1-bg);border-color:var(--t1);color:var(--t1)}
+.seg button.on[data-v="Pa"]{background:var(--t2-bg);border-color:var(--t2);color:var(--t2)}
+.seg button.on[data-v="ND"]{background:var(--t3-bg);border-color:var(--nd);color:var(--nd)}
+.seg button .full{font-weight:400;opacity:.7;font-size:10.5px}
+
+.leak-action{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+@media(max-width:520px){.leak-action{grid-template-columns:1fr}}
+.mini{border:1px solid var(--line);border-radius:4px;background:#fff;padding:14px 16px}
+.mini .step-lead{margin-bottom:9px}
+.mini select{width:100%;font-family:var(--mono);font-size:12.5px;padding:8px 10px;border:1px solid var(--line-2);border-radius:3px;background:var(--paper-2);color:var(--ink);cursor:pointer}
+.mini select:focus-visible{outline:2px solid var(--t3);outline-offset:1px}
+.mini .hint{font-size:11.5px;color:var(--ink-2);margin-top:8px;line-height:1.4}
+
+/* ---- Readout ---- */
+.readout{position:sticky;top:18px}
+.tier-card{border:1.5px solid var(--ink);border-radius:5px;background:#fff;overflow:hidden}
+.tier-band{padding:22px 22px 20px;transition:background .35s,border-color .35s;border-bottom:1px solid var(--line)}
+.tier-band.T1{background:var(--t1-bg)} .tier-band.T2{background:var(--t2-bg)} .tier-band.T3{background:var(--t3-bg)}
+.tier-ey{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:8px}
+.tier-num{font-size:40px;font-weight:800;letter-spacing:-0.03em;line-height:1;display:flex;align-items:center;gap:12px}
+.tier-num .swatch{width:26px;height:26px;border-radius:5px;border:2px solid}
+.T1 .swatch{background:var(--t1);border-color:var(--t1)} .T2 .swatch{background:var(--t2);border-color:var(--t2)} .T3 .swatch{background:var(--t3);border-color:var(--t3)}
+.tier-label{font-size:16px;font-weight:700;margin-top:12px}
+.tier-gloss{font-size:13.5px;color:var(--ink-2);margin-top:6px;line-height:1.45}
+.rule-fire{padding:16px 22px 20px}
+.rule-fire .step-lead{margin-bottom:10px}
+.rulebox{font-family:var(--mono);font-size:12.5px;line-height:1.5;padding:12px 14px;border:1px solid var(--line-2);border-left:3px solid var(--ink);border-radius:3px;background:var(--paper-2);color:var(--ink-2)}
+.rulebox b{color:var(--ink)}
+.gate-strip{display:flex;gap:5px;margin-top:14px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:3px;border:1px solid var(--line-2);background:#fff;color:var(--ink-2)}
+.chip b{color:var(--ink);font-weight:600}
+.chip.P{border-color:var(--t1-line)} .chip.Pa{border-color:var(--t2-line)} .chip.ND{border-color:var(--t3-line);color:var(--nd)}
+.reset{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:none;border:1px solid var(--line-2);padding:7px 13px;border-radius:3px;cursor:pointer}
+.reset:hover{border-color:var(--ink);color:var(--ink)}
+.reset:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+
+/* ---- Rules reference ---- */
+.rules-ref{margin-top:40px;border-top:1px solid var(--line);padding-top:26px}
+.rules-ref h3{font-size:13px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:16px}
+.rule-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px}
+.rule-item{padding:14px 16px;border:1px solid var(--line);background:#fff}
+.rule-item .n{font-family:var(--mono);font-size:11px;color:var(--ink-2);margin-bottom:6px}
+.rule-item p{font-size:13px;color:var(--ink-2);line-height:1.45}
+.rule-item code{font-family:var(--mono);font-size:12px;background:var(--paper-2);padding:1px 5px;border-radius:2px;color:var(--ink)}
+
+/* ---- Catalogue ---- */
+.cat-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.filt{font-family:var(--mono);font-size:12px;padding:7px 13px;border:1px solid var(--line-2);background:var(--paper-2);color:var(--ink-2);border-radius:3px;cursor:pointer}
+.filt.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filt:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+.tally{font-family:var(--mono);font-size:12px;color:var(--ink-2);margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:4px;background:#fff;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .18s,transform .18s,border-color .18s}
+.card:hover{box-shadow:0 4px 18px rgba(20,22,28,.09);transform:translateY(-2px);border-color:var(--line-2)}
+.card:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+.card-top{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--line)}
+.card-id{font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:.02em}
+.tier-pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:6px}
+.tier-pill::before{content:"";width:8px;height:8px;border-radius:50%}
+.tier-pill.T1{background:var(--t1-bg);color:var(--t1)}.tier-pill.T1::before{background:var(--t1)}
+.tier-pill.T2{background:var(--t2-bg);color:var(--t2)}.tier-pill.T2::before{background:var(--t2)}
+.tier-pill.T3{background:var(--t3-bg);color:var(--t3)}.tier-pill.T3::before{background:var(--t3)}
+.card-body{padding:14px 15px;flex:1}
+.card-fam{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:7px}
+.card-tool{font-size:14px;font-weight:600;line-height:1.35;margin-bottom:10px}
+.card-gates{display:flex;gap:4px}
+.gsq{font-family:var(--mono);font-size:10px;font-weight:600;width:30px;height:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:3px;border:1px solid var(--line-2);gap:1px}
+.gsq .lab{font-size:8px;font-weight:400;opacity:.65}
+.gsq.P{background:var(--t1-bg);color:var(--t1)}.gsq.Pa{background:var(--t2-bg);color:var(--t2)}.gsq.ND{background:var(--t3-bg);color:var(--nd)}
+.card-foot{padding:10px 15px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center}
+.leak-flag{color:var(--nd);font-weight:600}
+
+/* ---- Detail modal ---- */
+.scrim{position:fixed;inset:0;background:rgba(18,22,28,.55);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:5vh 20px;overflow-y:auto}
+.modal{background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;max-width:720px;width:100%;position:relative}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:sticky;top:0;background:var(--paper);z-index:2;border-radius:6px 6px 0 0}
+.modal-head .mid{font-family:var(--mono);font-size:20px;font-weight:700}
+.modal-head .mfam{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin-top:4px}
+.xbtn{font-family:var(--mono);font-size:18px;line-height:1;border:1px solid var(--line-2);background:#fff;width:34px;height:34px;border-radius:4px;cursor:pointer;color:var(--ink-2);flex-shrink:0}
+.xbtn:hover{border-color:var(--ink);color:var(--ink)}
+.xbtn:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+.modal-body{padding:22px 24px 26px}
+.mrow{margin-bottom:16px}
+.mrow .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px}
+.mrow .v{font-size:14px;color:var(--ink);line-height:1.5}
+.mgates{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.msource{border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:4px;padding:12px 14px;margin:16px 0;background:var(--paper-2)}
+.msource .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-bottom:9px}
+.src-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 18px}
+@media(max-width:520px){.src-grid{grid-template-columns:1fr}}
+.src-grid > div{font-size:12.5px;color:var(--ink);line-height:1.4}
+.src-grid .sl{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-bottom:2px}
+.src-grid a{color:var(--t3);text-decoration:underline;text-underline-offset:2px;word-break:break-all}
+@media(max-width:520px){.mgates{grid-template-columns:1fr}}
+.mgate{border:1px solid var(--line);border-radius:4px;padding:11px 13px;background:#fff}
+.mgate .gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.mgate .gn{font-size:12.5px;font-weight:600}
+.mgate .gv{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 7px;border-radius:3px}
+.mgate .gv.P{background:var(--t1-bg);color:var(--t1)}.mgate .gv.Pa{background:var(--t2-bg);color:var(--t2)}.mgate .gv.ND{background:var(--t3-bg);color:var(--nd)}
+.mgate .ge{font-size:12px;color:var(--ink-2);line-height:1.42}
+.mbanner{border-radius:4px;padding:14px 16px;margin-bottom:18px;border:1px solid}
+.mbanner.T1{background:var(--t1-bg);border-color:var(--t1-line)}.mbanner.T2{background:var(--t2-bg);border-color:var(--t2-line)}.mbanner.T3{background:var(--t3-bg);border-color:var(--t3-line)}
+.mbanner .bt{font-weight:800;font-size:17px;display:flex;align-items:center;gap:9px}
+.mbanner .br{font-size:13px;color:var(--ink-2);margin-top:7px;line-height:1.45}
+.loadbtn{margin-top:6px;font-family:var(--mono);font-size:12px;padding:9px 15px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:3px;cursor:pointer}
+.loadbtn:hover{background:var(--ink-2)}
+.loadbtn:focus-visible{outline:2px solid var(--t3);outline-offset:2px}
+
+footer{margin-top:56px;border-top:1px solid var(--line);padding-top:22px;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+footer a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+footer .cite{font-family:var(--mono);font-size:11.5px;background:var(--paper-2);border:1px solid var(--line);padding:12px 14px;border-radius:3px;margin-top:14px;color:var(--ink-2)}
+.disclaimer{font-size:12px;color:var(--ink-2);margin-top:16px;font-style:italic}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap mast">
+    <div class="eyebrow"><span class="dot"></span>Supplementary Table S5 &middot; Executable rubric<span class="dot"></span>Assessment snapshot 2026-07-08</div>
+    <h1>Readiness assessor for AI-driven grass genomics</h1>
+    <p class="sub">A use case is not decision-ready because a model scores well. It is decision-ready only when direct grass validation, transparent inputs, an adequate benchmark, and reusable access all hold for the exact species, task, and user action claimed. Set the four gates below and watch the tier follow the rule &mdash; not an average.</p>
+    <div class="metarow">
+      <div><b>18</b> <span>bounded use cases</span></div>
+      <div><b>4</b> <span>evidence gates</span></div>
+      <div><b>0 / 15 / 3</b> <span>Tier 1 / 2 / 3</span></div>
+      <div><span>none met all Tier 1 requirements at snapshot</span></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tab-assess" role="tab" aria-selected="true" aria-controls="p-assess">Assess a use case</button>
+      <button class="tab" id="tab-cat" role="tab" aria-selected="false" aria-controls="p-cat">Browse the 18 cases</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ============ ASSESSOR ============ -->
+  <section class="panel fade" id="p-assess" role="tabpanel" aria-labelledby="tab-assess">
+    <div class="assessor">
+      <div class="inputs">
+        <div class="step-lead">Step 1 &middot; Rate the four gates for one stated use case</div>
+        <div id="gates"></div>
+        <div class="leak-action">
+          <div class="mini">
+            <div class="step-lead">Step 2 &middot; Leakage status</div>
+            <select id="leak" aria-label="Unresolved leakage status">
+              <option value="No">No &mdash; controlled / not a concern</option>
+              <option value="Unclear">Unclear &mdash; not confirmed</option>
+              <option value="Yes">Yes &mdash; present</option>
+              <option value="Not assessed">Not assessed</option>
+            </select>
+            <p class="hint">Any value other than <b>No</b> caps the case at Tier 3 pending an audit.</p>
+          </div>
+          <div class="mini">
+            <div class="step-lead">Step 3 &middot; Stated user action</div>
+            <select id="action" aria-label="Type of user action">
+              <option value="decision">Operational decision support</option>
+              <option value="explore">Hypothesis / mechanism / benchmark</option>
+            </select>
+            <p class="hint">Ranking, selection, or calibrated trait extraction is decision support. Prioritizing candidates or building benchmarks is not &mdash; those cap at Tier 2 even when every gate passes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="readout">
+        <div class="tier-card">
+          <div class="tier-band T2" id="band">
+            <div class="tier-ey">Resulting readiness tier</div>
+            <div class="tier-num"><span class="swatch"></span><span id="tierNum">Tier 2</span></div>
+            <div class="tier-label" id="tierLabel">Hypothesis-guiding</div>
+            <div class="tier-gloss" id="tierGloss">Supports prioritization, interpretation, or experimental design within the stated boundary.</div>
+          </div>
+          <div class="rule-fire">
+            <div class="step-lead">Rule that determined this tier</div>
+            <div class="rulebox" id="rule"></div>
+            <div class="gate-strip" id="strip"></div>
+            <button class="reset" id="reset">Reset gates</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rules-ref">
+      <h3>The decision rules, in full</h3>
+      <div class="rule-list">
+        <div class="rule-item"><div class="n">Rule 1 &middot; Leakage</div><p>Leakage status of <code>Yes</code>, <code>Unclear</code>, or <code>Not assessed</code> forces <b>Tier 3</b> until a leakage audit resolves it.</p></div>
+        <div class="rule-item"><div class="n">Rule 2 &middot; Both critical gates fail</div><p><code>Direct validation = ND</code> and <code>Benchmark = ND</code> together force <b>Tier 3</b>.</p></div>
+        <div class="rule-item"><div class="n">Rule 3 &middot; One critical gate fails</div><p>Either <code>Direct validation = ND</code> or <code>Benchmark = ND</code> caps the case at <b>Tier 2</b>.</p></div>
+        <div class="rule-item"><div class="n">Rule 4 &middot; Non-critical ND</div><p><code>Input transparency = ND</code> or <code>Accessibility = ND</code> blocks Tier 1 but does not by itself trigger Tier 3.</p></div>
+        <div class="rule-item"><div class="n">Rule 5 &middot; Action ceiling</div><p>All four gates <code>P</code>, but the action is hypothesis, mechanism, or benchmark work &rarr; capped at <b>Tier 2</b>.</p></div>
+        <div class="rule-item"><div class="n">Rule 6 &middot; Tier 1</div><p>All four gates <code>P</code> <b>and</b> the action is operational decision support &rarr; <b>Tier 1</b>, bounded to the stated conditions.</p></div>
+        <div class="rule-item"><div class="n">Rule 7 &middot; Remaining partial evidence</div><p>Any remaining case, such as one or more <code>Partial</code> ratings with no ND and leakage status No, is assigned <b>Tier 2</b>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATALOGUE ============ -->
+  <section class="panel fade" id="p-cat" role="tabpanel" aria-labelledby="tab-cat" hidden>
+    <div class="cat-controls">
+      <button class="filt on" data-f="all">All 18</button>
+      <button class="filt" data-f="Tier 2">Tier 2 &middot; 15</button>
+      <button class="filt" data-f="Tier 3">Tier 3 &middot; 3</button>
+      <span class="tally" id="tally"></span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<div class="wrap">
+  <footer>
+    <div>Executable companion to the readiness rubric (Supplementary Table S5). Ratings are use-case-specific and are not rankings of papers, tools, developers, or overall scientific quality. Tiers are bounded to the stated species / evidence domain, task, and intended user action, and reflect the evidence snapshot of 8 July 2026; preprints and repositories should be rechecked before reuse.</div>
+    <div class="cite">Related supplementary-data record: Luo L, Sun Z, Lin Z, et&nbsp;al. Supplementary data and literature-mapping records for &ldquo;AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions&rdquo;. Version&nbsp;1.1. Zenodo, 2026. doi:10.5281/zenodo.20825481</div>
+    <div class="disclaimer">This tool reproduces the manuscript-reported reference assessments; it does not automatically evaluate new tools. Gate ratings for a new use case require reading the underlying evidence against the rubric definitions.</div>
+  </footer>
+</div>
+
+<script>
+const UC = [{"id":"UC01","family":"Genomic prediction and G×E","tool":"GBLUP with genotype-by-environment interaction for ryegrass dry-matter yield","species":"Perennial ryegrass; 72 base cultivars; 23 multi-harvest, multi-site trials in south-eastern Australia","task":"Estimate environment-specific seasonal and annual dry-matter yield and compare cultivar rankings across mega-environments","action":"Support cultivar and parent ranking within the represented Australian regional evaluation system","actionType":"decision","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct target-grass evidence; regional multi-site/multi-harvest trials and environment-specific cultivar performance were evaluated.","it_e":"Trial structure, genomic relationships, spatial correction, G×E model and target mega-environments are reported; genotype allele-frequency data are publicly deposited.","ba_e":"Leave-one-out validation and comparison against the industry-standard BLUE model directly assess the stated within-system ranking task.","ar_e":"Genotype dataset is public, but analysis code and a complete executable environment were not clearly archived in the article.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"All critical evidence gates are demonstrated, but reuse is partial; the rating is therefore capped below Tier 1 pending reproducible code/workflow access.","boundary":"Not evidence for transfer to new breeding cycles, families or production regions without renewed validation.","advance":"Archive analysis code, software versions and a reusable workflow; add temporal or breeding-cycle-separated validation.","repref":"Zhu et al. 2025, Frontiers in Plant Science 16:1579376","doi":"https://doi.org/10.3389/fpls.2025.1579376","version":"Version of record"},{"id":"UC02","family":"Environment-aware statistical ranking","tool":"Factor-analytic G×E models for perennial ryegrass cultivar dry-matter yield","species":"Perennial ryegrass; 126 cultivars/breeding lines; 18 trials spanning 14 years in south-eastern Australia","task":"Model multi-environment, multi-harvest dry-matter yield and identify mega-environment-specific cultivar rankings","action":"Provide environment-specific cultivar performance estimates for pasture evaluation","actionType":"decision","dv":"P","it":"P","ba":"Pa","ar":"ND","dv_e":"Direct grass and regional use-case evidence from a long-running multi-environment trial network.","it_e":"Trials, harvests, spatial structure, model equations and covariance structures are described in detail.","ba_e":"Models were compared by fit and used for prediction, but the study is not a marker-based GP deployment test and lacks a clearly independent held-out deployment evaluation.","ar_e":"The underlying trial data cannot be shared because the authors do not have permission.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Direct validation passes, but accessibility is not demonstrated and benchmark evidence is partial for prospective deployment.","boundary":"Supports regional cultivar evaluation, not genomic selection of untested germplasm.","advance":"Provide a de-identified reproducible benchmark or synthetic/authorized validation set and executable scripts.","repref":"Zhu et al. 2023, Field Crops Research 303:109143","doi":"https://doi.org/10.1016/j.fcr.2023.109143","version":"Version of record"},{"id":"UC03","family":"Genomic prediction in polyploid forage grass","tool":"Allele-dosage-aware genomic selection in Panicum maximum","species":"Autotetraploid Panicum maximum; recurrent-selection population of 530 genotypes; six traits","task":"Compare tetraploid versus diploid dosage representations and genomic prediction models","action":"Rank individuals within the evaluated recurrent-selection population","actionType":"decision","dv":"P","it":"P","ba":"Pa","ar":"P","dv_e":"Direct validation in the focal tropical forage grass and breeding population.","it_e":"Phenotypes, marker filtering, dosage coding, longitudinal models and prediction procedures are reported.","ba_e":"Cross-validation evaluates within-population prediction, but does not provide cross-cycle, family-separated or external population validation.","ar_e":"Phenotypic and molecular data, R code, SRA reads and supplementary files are publicly available.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Benchmark adequacy is partial for operational selection beyond the evaluated population, so the case remains hypothesis-/selection-guiding rather than broadly decision-ready.","boundary":"Not evidence for new cycles, unrelated germplasm or other ploidy structures.","advance":"Add cross-cycle or family-separated validation and uncertainty reporting in a prospective breeding setting.","repref":"de C. Lara et al. 2019, G3 9:2463–2475","doi":"https://doi.org/10.1534/g3.118.200986","version":"Version of record"},{"id":"UC04","family":"Joint-learning genomic prediction","tool":"Feature-selection and joint classification/regression for polyploid grasses","species":"Urochloa decumbens, Megathyrsus maximus and sugarcane biparental populations","task":"Predict quantitative traits and performance classes using joint learning and marker selection","action":"Prioritize individuals and reduced marker panels in complex polyploid breeding populations","actionType":"decision","dv":"P","it":"P","ba":"Pa","ar":"Pa","dv_e":"Direct tests include two forage grasses and sugarcane, with measured quantitative traits.","it_e":"Populations, genotyping, feature selection, models and evaluation procedures are described in the full text.","ba_e":"Multiple prediction settings and baselines are reported, but external breeding-cycle validation is absent and feature-selection nesting should be rechecked for every split.","ar_e":"Sequencing accessions are public; complete analysis code and a versioned executable workflow were not clearly archived.","leak":"Unclear – nested feature-selection not confirmed in the published evaluation","leakStatus":"Unclear","leakNote":"Unclear – nested feature-selection not confirmed in the published evaluation","tier":"Tier 3","rationale":"Feature-selection nesting could not be confirmed from the published evaluation; unresolved-leakage status is therefore Unclear and, per the non-compensation rule, the case is capped at Tier 3 pending a leakage audit. Direct validation and accessibility also remain partial.","boundary":"Not evidence that the reduced marker panels generalize across unrelated breeding populations.","advance":"Verify feature-selection nesting; archive code; add external population or breeding-cycle validation.","repref":"Aono et al. 2022, Scientific Reports 12:12499","doi":"https://doi.org/10.1038/s41598-022-16417-7","version":"Version of record"},{"id":"UC05","family":"Genomic prediction with pangenome-derived variants","tool":"SNP- and SV-based genomic selection in pearl millet","species":"Pearl millet PMiGAP; 242 phenotyped accessions; 120 traits across control and drought conditions","task":"Compare nine prediction models using SNPs versus structural variants and nominate high-GEBV accessions","action":"Prioritize candidate pearl millet accessions for follow-up breeding tests","actionType":"decision","dv":"P","it":"P","ba":"Pa","ar":"Pa","dv_e":"Direct pearl millet prediction using focal-species SNPs, pangenome-derived SVs and agronomic phenotypes.","it_e":"Reference accession, marker counts, phenotype filtering, models and 70/30 repeated cross-validation are reported.","ba_e":"Random 70/30 splits were repeated, but phenotypes had single replication and no family-, environment- or cycle-separated external test was performed.","ar_e":"Input datasets derive from public studies, but a complete code/workflow archive for this analysis was not confirmed.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Direct validation passes, but benchmark adequacy and reproducible reuse are partial.","boundary":"Candidate GEBVs are not proof of realized breeding gain or cross-environment stability.","advance":"Validate candidates prospectively with replicated trials; use family/cycle/environment-separated splits and archive code.","repref":"Yan et al. 2024, Theoretical and Applied Genetics 137:244","doi":"https://doi.org/10.1007/s00122-024-04754-2","version":"Version of record"},{"id":"UC06","family":"Regional genomic prediction","tool":"G×E-aware genomic prediction with yield-surrogate traits in switchgrass","species":"Switchgrass diversity panel evaluated across multiple regional field environments","task":"Predict regional biomass performance while accounting for G×E and limited target-site observations","action":"Rank switchgrass candidates for a represented region when matched multi-site training and at least one target-relevant observation/surrogate are available","actionType":"decision","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct switchgrass, multi-environment and breeding-facing evidence.","it_e":"Genotypes, environments, traits, relationship models and prediction scenarios are documented.","ba_e":"Validation scenarios explicitly test unobserved individuals/sites and compare genetic-only, G×E and surrogate-trait information under the stated regional use.","ar_e":"Sequencing data are accessible through SRA (BioProject PRJNA622568; study SRP258586), but the cited Dryad repository containing the realized relationship matrix, mean field performance, SNP subset and example code did not resolve when checked on 8 July 2026. Accessibility and reuse are therefore rated Partial.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Direct switchgrass validation, transparent study inputs and a claim-matched regional genotype-by-environment benchmark support hypothesis-guiding use within the represented regional setting. However, incomplete access to the analysis-ready field-performance data, relationship matrix, SNP subset and example code prevents a Tier 1 designation under the non-compensation rule.","boundary":"Decision-ready only under the specified matched regional-data condition.","advance":"Restore or replace the repository link and provide persistent access to the analysis-ready field-performance data, realized relationship matrix, SNP subset, preprocessing information and executable example code before reconsidering Tier 1.","repref":"Tilhou et al. 2024, G3 14:jkae159","doi":"https://doi.org/10.1093/g3journal/jkae159","version":"Version of record"},{"id":"UC07","family":"Genomic prediction and G×E","tool":"Genotype-by-environment predictive ability in Miscanthus","species":"Miscanthus sinensis and M. sacchariflorus panels across Northern Hemisphere trial locations","task":"Assess whether multi-location GS models predict biomass yield in untested environments","action":"Guide parent prioritization and identify where additional target-environment trials are needed","actionType":"decision","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct Miscanthus evidence across multiple species panels and environments.","it_e":"Reference versions, SNP filtering, trial locations/years, environmental variables and models are documented.","ba_e":"The evaluation explicitly targets untested environments and exposes latitude-dependent failure boundaries.","ar_e":"Phenotypic/environmental data are openly deposited, but analysis code was not clearly archived.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Validation is strong, but practical reuse is partial and the study itself identifies target-environment coverage gaps.","boundary":"Not decision-ready for high-latitude environments absent representative training trials.","advance":"Release analysis code; increase high-latitude trials; add calibrated uncertainty for target-environment predictions.","repref":"Widener et al. 2024, GCB Bioenergy 16:e13113","doi":"https://doi.org/10.1111/gcbb.13113","version":"Version of record"},{"id":"UC08","family":"Genomic prediction and G×E","tool":"Reaction-norm and envirotyping GP at the limit of ryegrass distribution","species":"Perennial ryegrass; 264 diverse accessions across six Nordic/Baltic countries","task":"Predict yield, spring cover and winter kill in unobserved countries and genetically distinct germplasm","action":"Support adaptation-oriented candidate ranking while identifying extrapolation failures","actionType":"decision","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct ryegrass GP across contrasting environments and diverse germplasm.","it_e":"Genotyping, environmental covariates, reaction-norm/envirotyping models and trait definitions are reported.","ba_e":"Three claim-matched validation schemes include leave-one-country-out and leave-one-genetic-cluster-out, with explicit failure analysis.","ar_e":"Data and analysis scripts are publicly available through a persistent Zenodo record and a public GitHub repository. The deposited files include raw SNP data, processed genomic and environmental matrices, raw and processed phenotypes, environmental data and analysis scripts. However, the code repository lacks an explicit software licence, detailed stepwise execution instructions and a pinned computational environment, and some scripts contain local absolute paths. Accessibility/reuse is therefore rated Partial.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Direct perennial ryegrass validation, transparent inputs and claim-matched country- and genetic-cluster-based validation support strong hypothesis-guiding use. However, reuse remains partial because the public code package lacks an explicit licence, a pinned computational environment and sufficiently portable stepwise execution documentation. Performance also declined markedly for genetically distant germplasm, preventing broad decision-ready claims.","boundary":"Not reliable for genetically distant germplasm without revalidation.","advance":"Add an explicit software licence; archive a versioned code release with a persistent DOI; replace local absolute paths with relative or configurable paths; report package and software versions; provide stepwise execution instructions; and add prospective breeding-cycle validation and calibrated uncertainty thresholds before reconsidering Tier 1.","repref":"Johansen et al. 2025, Theoretical and Applied Genetics 138:281","doi":"https://doi.org/10.1007/s00122-025-05064-x","version":"Version of record"},{"id":"UC09","family":"Genome foundation-model benchmarking","tool":"Benchmark of general DNA foundation models","species":"Primarily human/general genomic benchmark domains; no direct grass decision endpoint","task":"Compare zero-shot DNA foundation-model embeddings across sequence, expression, variant and genome-structure tasks","action":"Use general-DNA model rankings to prioritize functional variants or breeding candidates in a grass species","actionType":"explore","dv":"ND","it":"P","ba":"ND","ar":"P","dv_e":"The study benchmarks general genomic tasks but does not validate a focal grass species, breeding population or grass decision endpoint.","it_e":"Models, checkpoints, tasks, preprocessing and benchmark datasets are described.","ba_e":"The benchmark is rigorous for its published general tasks, but it is not task-matched to grass variant prioritization or breeding decisions.","ar_e":"Processed datasets, code, MIT licence and a versioned Zenodo archive are available.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 3","rationale":"Direct validation and task-matched benchmark adequacy are both ND for the stated grass decision use; the non-compensation rule therefore fixes Tier 3.","boundary":"May serve as a baseline or benchmark-design resource, not as evidence for grass decisions.","advance":"Add held-out grass species/populations, grass-specific endpoints, simpler baselines, calibration and allele-level failure analysis.","repref":"Feng et al. 2025, Nature Communications 16:10780","doi":"https://doi.org/10.1038/s41467-025-65823-8","version":"Version of record"},{"id":"UC10","family":"Pangenome and structural variation","tool":"Pearl millet graph pangenome and heat-tolerance SV interpretation","species":"Pearl millet; 10 newly assembled + 1 existing chromosome-scale assemblies (11 total), population resequencing, transcriptomics and functional assays","task":"Identify SVs and regulatory mechanisms associated with heat tolerance","action":"Prioritize heat-tolerance SVs, genes and mechanisms for experimental follow-up","actionType":"explore","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct focal-grass evidence includes SV–expression relationships and experimental validation of an RWP-RK heat-response regulator.","it_e":"Assembly inputs, graph construction, SV classes, population data and multi-omics procedures are extensively documented.","ba_e":"Assembly/SV quality was evaluated with multiple metrics, callers, PCR/read support and orthogonal biological assays for the mechanism-guiding use.","ar_e":"Raw data and assemblies are public; the study used published tools, but no complete end-to-end custom workflow archive was identified.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Four-gate evidence is strong, but the intended action is candidate/mechanism prioritization rather than an operational breeding decision, and reuse is partial.","boundary":"Trait-linked SVs require validation in target breeding pools and environments.","advance":"Provide reusable graph/variant workflow and prospective target-pool validation of selected SVs.","repref":"Yan et al. 2023, Nature Genetics 55:507–518","doi":"https://doi.org/10.1038/s41588-023-01302-4","version":"Version of record"},{"id":"UC11","family":"Pangenome and structural variation","tool":"Setaria graph genome, pangenome variation and multi-environment trait mapping","species":"Setaria italica/S. viridis; 110 assemblies, 1,844 accessions, 68 traits across 13 environments","task":"Construct a graph genome, identify SVs and map trait-associated variation","action":"Build reference-bias-aware features and prioritize trait-linked genes/SVs","actionType":"explore","dv":"P","it":"P","ba":"Pa","ar":"P","dv_e":"Direct Setaria evidence with focal-species graph construction, trait mapping and multi-environment phenotypes.","it_e":"Assemblies, quality metrics, variant procedures, populations, traits and downstream analyses are described.","ba_e":"Graph and variant quality are extensively checked, but breeding-potential predictions use repeated random splits rather than external cycles or populations.","ar_e":"Assemblies, phenotypes, code and source data are publicly deposited in NCBI, Zenodo and GitHub.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Benchmark adequacy is partial for decision use; the resource is highly reusable but remains hypothesis-/feature-construction ready.","boundary":"Trait associations and simulated breeding potential are not realized genetic gain.","advance":"Add pangenome-aware external prediction and prospective selection validation.","repref":"He et al. 2023, Nature Genetics 55:1232–1242","doi":"https://doi.org/10.1038/s41588-023-01423-w","version":"Version of record"},{"id":"UC12","family":"Single-cell and epigenomic interpretation","tool":"Pearl millet single-cell heat-stress atlas with WGCNA and functional follow-up","species":"Pearl millet Tifleaf_3 leaves under control, heat, priming and triggering conditions","task":"Resolve cell-type-specific heat-stress memory and prioritize UGT73C3-related mechanisms","action":"Guide mechanistic experiments and candidate-gene prioritization for heat tolerance","actionType":"explore","dv":"P","it":"P","ba":"Pa","ar":"Pa","dv_e":"Direct pearl millet single-cell evidence with cell-type-resolved stress responses and functional follow-up.","it_e":"Plant material, stress design, replicates, reference genome, filtering thresholds, software versions and orthogonal assays are reported.","ba_e":"Single-cell findings are cross-checked with bulk RNA-seq, CUT&Tag and rice mutant/overexpression assays, but causal validation is not in pearl millet and population transfer is untested.","ar_e":"Data deposition is expected/reported in the article package, but a complete reusable analysis-code archive was not confirmed in this assessment.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"The case supports mechanism-guiding use; benchmark and reuse are partial for stronger biological or breeding decisions.","boundary":"Not population-level evidence for heat-tolerance selection.","advance":"Validate in pearl millet; release code/processed objects; test across genotypes, stages and field heat regimes.","repref":"Jin et al. 2025, New Phytologist 247:637–650","doi":"https://doi.org/10.1111/nph.70232","version":"Version of record"},{"id":"UC13","family":"Single-cell and spatial transcriptomics","tool":"Phragmites single-cell/spatial atlas and B-chromosome association with invasiveness","species":"Phragmites australis; European non-invasive and North American invasive populations","task":"Map cell states spatially and identify B-chromosome-enriched, population-associated expression programs","action":"Generate cell-type-specific hypotheses about invasiveness and regenerative growth","actionType":"explore","dv":"P","it":"P","ba":"Pa","ar":"P","dv_e":"Direct evidence in a non-model wetland grass, using single-cell and spatial data from native/invasive population contrasts.","it_e":"Sampling, common-garden design, scRNA-seq/spatial workflows, annotations and comparison procedures are reported.","ba_e":"Spatial projection, pseudobulk and sensitivity analyses support interpretation, but the biological sample count is small and B-chromosome associations are not causal tests.","ar_e":"Raw data, analysis scripts and archived materials are linked through SRA, GitHub and Zenodo.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Strong direct and reusable evidence supports mechanistic hypothesis generation, not management or breeding decisions.","boundary":"Not a causal intervention test and not representative of all Phragmites populations.","advance":"Expand population replication and experimentally manipulate/segregate B chromosomes or prioritized pathways.","repref":"Wang et al. 2026, Genome Biology 27:184","doi":"https://doi.org/10.1186/s13059-026-04079-x","version":"Version of record"},{"id":"UC14","family":"Regulatory deep learning","tool":"Basenji-HMM cross-species chromatin-accessibility and cCRE prediction in grasses","species":"Five Poaceae species and five orthologous tissues","task":"Learn sequence-to-accessibility rules, transfer across grasses and delineate candidate CREs","action":"Prioritize grass regulatory elements and cross-species regulatory hypotheses","actionType":"explore","dv":"P","it":"P","ba":"P","ar":"P","dv_e":"Direct multi-grass evidence, including within- and cross-species predictions against observed ATAC-seq.","it_e":"Genome assemblies, tissues, non-overlapping train/validation/test windows, model configuration and evaluation metrics are documented.","ba_e":"Within-species and cross-species tests, AUROC/AUPRC/PCC, model-version comparison and a distant Arabidopsis transfer baseline support the stated regulatory-prioritization task.","ar_e":"Raw ATAC/RNA data, trained models, scripts and genome-wide element annotations are public.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"All four gates pass, but the stated user action is hypothesis-guiding regulatory prioritization rather than an operational breeding or trait decision-support action; per the Rubric, such uses are capped at Tier 2 even when all gates pass.","boundary":"Not evidence that a predicted element changes an agronomic trait in a target population.","advance":"Add allele-level perturbation, target-population context and trait-linked validation.","repref":"Li et al. 2026, Molecular Plant, doi:10.1016/j.molp.2026.05.017","doi":"https://doi.org/10.1016/j.molp.2026.05.017","version":"Version of record"},{"id":"UC15","family":"Deep phenotyping","tool":"YOLOv8 tiller quantification in interspecific bentgrass hybrids","species":"Interspecific bentgrass hybrids under a controlled image-acquisition workflow","task":"Automate tiller counting under dense overlap and compare computer-vision models","action":"Generate scalable tiller-count phenotypes for the evaluated imaging conditions","actionType":"decision","dv":"P","it":"P","ba":"Pa","ar":"Pa","dv_e":"Direct turfgrass evidence with manual/reference counts and hybrid plant material.","it_e":"Plant material, imaging, annotations, model settings and group-size evaluation are reported.","ba_e":"YOLOv8 is compared with OpenCV and Faster R-CNN and tested across density regimes, but no independent camera/site/species dataset establishes external transfer.","ar_e":"The article and supplement contain the reported contributions, but no open image/code/model repository is specified.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Direct validation passes, but benchmark and reuse are partial; the use remains validated trait extraction under restricted conditions.","boundary":"Not decision-ready outside the described imaging and plant-density regime.","advance":"Release images/annotations/code/weights and validate on independent imaging systems, seasons and grass species.","repref":"Ferm et al. 2026, Frontiers in Plant Science 17:1810220","doi":"https://doi.org/10.3389/fpls.2026.1810220","version":"Version of record"},{"id":"UC16","family":"Deep phenotyping","tool":"Mask R-CNN stomatal density and area phenotyping in sorghum","species":"Sorghum association panel; 311 accessions; two field environments","task":"Automate stomatal segmentation/counting and compare with manual phenotyping for GWAS-ready traits","action":"Extract stomatal density and complex-area phenotypes under the reported microscopy workflow","actionType":"decision","dv":"P","it":"P","ba":"P","ar":"Pa","dv_e":"Direct sorghum evidence across two field environments, with manual measurements, GWAS concordance and physiological follow-up.","it_e":"Training/validation image counts, model architecture, field environments, trait definitions and downstream analyses are described.","ba_e":"Manual-versus-model agreement, independent image evaluation, two environments and downstream genetic/physiological concordance support the narrow trait-extraction task.","ar_e":"Article and supplements are available, but reusable code, weights and the full annotated image set were not clearly archived.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"Biological and benchmark evidence pass, but accessibility is partial; Tier 1 is therefore not assigned.","boundary":"Decision-ready only for the reported phenotyping protocol after local calibration.","advance":"Release code/weights/images and add independent cross-laboratory or cross-protocol validation.","repref":"Bheemanahalli et al. 2021, Plant Physiology 186:1562–1579","doi":"https://doi.org/10.1093/plphys/kiab174","version":"Version of record"},{"id":"UC17","family":"Plant DNA foundation model","tool":"PlantCAD2 long-context DNA language model","species":"Pretrained on 65 angiosperm genomes; plant cross-species functional-annotation benchmarks","task":"Generate long-context plant sequence representations and transfer them across species/tasks","action":"Prioritize functional regions or candidate annotations in an under-resourced grass before experimental testing","actionType":"explore","dv":"Pa","it":"P","ba":"Pa","ar":"Pa","dv_e":"Plant-specific and cross-species benchmarks include angiosperm evidence, but direct validation for the user's focal grass, population and decision is incomplete.","it_e":"Pretraining corpus, long-context architecture, public tasks and evaluation design are described in the preprint.","ba_e":"Cross-species public benchmarks are substantial, but preprint versioning, potential overlap between pretraining and benchmarks, grass-specific held-out tests and allele-level failures require final checking.","ar_e":"A public project repository exists, but exact model-weight, licence, checkpoint and reproducible-environment status should be reconfirmed for the submission snapshot.","leak":"Unclear – pretraining/benchmark overlap for the plant DNA language model not audited at snapshot date","leakStatus":"Unclear","leakNote":"Unclear – pretraining/benchmark overlap for the plant DNA language model not audited at snapshot date","tier":"Tier 3","rationale":"Direct validation and benchmark adequacy are partial, and pretraining/benchmark overlap could not be audited from the preprint; unresolved-leakage status is therefore Unclear and the case is capped at Tier 3 pending version freeze, weights/licence confirmation and split-overlap audit.","boundary":"Not evidence for direct breeding or causal variant decisions.","advance":"Freeze the cited version; verify weights/licence; use held-out grass lineages, pangenome/allelic sequences, calibration and simpler baselines.","repref":"Zhai et al. 2025, bioRxiv 2025.08.27.672609, version 4","doi":"https://doi.org/10.1101/2025.08.27.672609","version":"bioRxiv preprint; version 4 cited and confirmed on 2026-07-07; title revised in version 4"},{"id":"UC18","family":"Cross-species sequence-to-expression benchmarking","tool":"Current genomic DL architectures across grass species and alleles","species":"Eighteen Andropogoneae grass species in total, including 15 training species, two validation species and maize as the held-out species; 26 maize lines were used for within-species allele evaluation","task":"Test whether sequence-to-expression architectures generalize across species and within-species alleles","action":"Design realistic grass transfer benchmarks and set failure boundaries for sequence-to-expression models","actionType":"explore","dv":"P","it":"P","ba":"P","ar":"P","dv_e":"Direct multi-grass evidence explicitly evaluates species transfer and allele-level prediction.","it_e":"Species, orthogroup-aware splits, input windows, architectures, targets and metrics are described.","ba_e":"The study directly contrasts held-out species and within-species allele tasks, compares four architectures and reports a clear failure boundary.","ar_e":"The preprint and a versioned Zenodo research record are openly available.","leak":"No","leakStatus":"No","leakNote":"","tier":"Tier 2","rationale":"All four gates pass for benchmark design and failure-boundary definition, but the stated user action is methodological (cross-species transfer-benchmark construction) rather than an operational biological or breeding decision; per the Rubric, such uses are capped at Tier 2.","boundary":"Not a decision-support model for allele ranking despite strong cross-species performance.","advance":"Freeze the exact preprint/data version; independently replicate allele-level tests and add calibration/variant-aware inputs.","repref":"Wrightsman et al. 2024, bioRxiv 2024.04.11.589024","doi":"https://doi.org/10.1101/2024.04.11.589024","version":"bioRxiv preprint; version 2 posted 2024-09-04 and confirmed as the cited version on 2026-07-07"}];
+
+const TIER = {
+  'Tier 1':{cls:'T1',label:'Decision-support ready',gloss:'Supports the specified user action under the validated conditions \u2014 bounded, not a general endorsement.'},
+  'Tier 2':{cls:'T2',label:'Hypothesis-guiding',gloss:'Supports prioritization, interpretation, or experimental design within the stated boundary.'},
+  'Tier 3':{cls:'T3',label:'Benchmark-required',gloss:'Technically promising, but stronger task-specific validation is required before it can guide biological or breeding choices.'}
+};
+const GATES = [
+  {key:'dv',g:'Gate 1',name:'Direct grass validation',crit:true,desc:'Was the target species, population, environment, and endpoint actually tested \u2014 matching the claimed action?'},
+  {key:'it',g:'Gate 2',name:'Input transparency',crit:false,desc:'Are genome/pangenome versions, samples, markers, phenotypes, preprocessing, and splits traceable?'},
+  {key:'ba',g:'Gate 3',name:'Benchmark adequacy',crit:true,desc:'Claim-matched split, a sensible baseline, leakage control, task metrics, and a relevant held-out test?'},
+  {key:'ar',g:'Gate 4',name:'Accessibility and reuse',crit:false,desc:'Data, code, weights, versioning, docs, and licence sufficient for a reader to repeat or adapt the workflow?'}
+];
+const VALS = [
+  {v:'P',full:'Pass'},{v:'Pa',full:'Partial'},{v:'ND',full:'Not dem.'}
+];
+
+// ---- decision engine: faithful to Rubric R9-R11 ----
+function computeTier(dv,it,ba,ar,leak,action){
+  if(leak==='Yes'||leak==='Unclear'||leak==='Not assessed')
+    return {tier:'Tier 3',rule:'<b>Rule 1 fired.</b> Leakage status is \u201c'+leak+'\u201d, which forces Tier 3 until a leakage audit resolves it. No combination of gate passes can override this.'};
+  if(dv==='ND'&&ba==='ND')
+    return {tier:'Tier 3',rule:'<b>Rule 2 fired.</b> Both critical gates \u2014 direct validation and benchmark adequacy \u2014 are Not demonstrated, so the case is benchmark-required.'};
+  const cap2 = (dv==='ND'||ba==='ND');
+  const allP = (dv==='P'&&it==='P'&&ba==='P'&&ar==='P');
+  if(cap2){
+    const which = dv==='ND' ? 'Direct validation' : 'Benchmark adequacy';
+    return {tier:'Tier 2',rule:'<b>Rule 3 fired.</b> '+which+' is Not demonstrated, which caps the case at Tier 2 \u2014 strength elsewhere cannot compensate for a missing critical gate.'};
+  }
+  if(allP){
+    if(action==='decision')
+      return {tier:'Tier 1',rule:'<b>Rule 6 fired.</b> All four gates pass and the stated action is operational decision support, so the case is decision-support ready \u2014 bounded to the stated species, population, environment, task, and action.'};
+    return {tier:'Tier 2',rule:'<b>Rule 5 fired.</b> All four gates pass, but the stated action is hypothesis, mechanism, or benchmark work \u2014 not operational decision support \u2014 so it is capped at Tier 2. This is the rule that keeps a well-documented exploratory study from being relabelled a breeding-decision tool.'};
+  }
+  const ndNon = (it==='ND'||ar==='ND');
+  if(ndNon){
+    return {tier:'Tier 2',rule:'<b>Rule 4 fired.</b> A non-critical gate (input transparency or accessibility and reuse) is Not demonstrated \u2014 this blocks Tier 1 but does not by itself trigger Tier 3. Remaining evidence places it at Tier 2.'};
+  }
+  return {tier:'Tier 2',rule:'<b>Rule 7 fired.</b> One or more gates are Partial, with no ND and no unresolved leakage, so the case is hypothesis-guiding.'};
+}
+
+// ---- state ----
+const state = {dv:'P',it:'P',ba:'P',ar:'Pa',leak:'No',action:'decision'};
+
+// ---- build gate UI ----
+const gatesEl = document.getElementById('gates');
+GATES.forEach(G=>{
+  const box=document.createElement('div');
+  box.className='gate'+(G.crit?' crit':'');
+  box.innerHTML =
+    '<div class="gate-head"><div class="gate-name"><span class="g">'+G.g+'</span>'+G.name+'</div>'+
+    (G.crit?'<span class="gate-tag">Critical gate</span>':'')+'</div>'+
+    '<div class="gate-desc">'+G.desc+'</div>'+
+    '<div class="seg" role="group" aria-label="'+G.name+' rating"></div>';
+  const seg=box.querySelector('.seg');
+  VALS.forEach(V=>{
+    const b=document.createElement('button');
+    b.dataset.v=V.v; b.dataset.gate=G.key;
+    b.innerHTML=V.v+' <span class="full">'+V.full+'</span>';
+    if(state[G.key]===V.v) b.classList.add('on');
+    b.setAttribute('aria-pressed', state[G.key]===V.v?'true':'false');
+    b.onclick=()=>{
+      state[G.key]=V.v;
+      seg.querySelectorAll('button').forEach(x=>{x.classList.toggle('on',x.dataset.v===V.v);x.setAttribute('aria-pressed',x.dataset.v===V.v?'true':'false');});
+      render();
+    };
+    seg.appendChild(b);
+  });
+  gatesEl.appendChild(box);
+});
+document.getElementById('leak').onchange=e=>{state.leak=e.target.value;render();};
+document.getElementById('action').onchange=e=>{state.action=e.target.value;render();};
+document.getElementById('reset').onclick=()=>{
+  Object.assign(state,{dv:'P',it:'P',ba:'P',ar:'Pa',leak:'No',action:'decision'});
+  syncUI();render();
+};
+
+function syncUI(){
+  gatesEl.querySelectorAll('.seg').forEach(seg=>{
+    seg.querySelectorAll('button').forEach(b=>{
+      const on=state[b.dataset.gate]===b.dataset.v;
+      b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');
+    });
+  });
+  document.getElementById('leak').value=state.leak;
+  document.getElementById('action').value=state.action;
+}
+
+function render(){
+  const {tier,rule}=computeTier(state.dv,state.it,state.ba,state.ar,state.leak,state.action);
+  const T=TIER[tier];
+  const band=document.getElementById('band');
+  band.className='tier-band '+T.cls;
+  document.getElementById('tierNum').textContent=tier;
+  document.getElementById('tierLabel').textContent=T.label;
+  document.getElementById('tierGloss').textContent=T.gloss;
+  document.getElementById('rule').innerHTML=rule;
+  const names={dv:'DV',it:'IT',ba:'BA',ar:'AR'};
+  const strip=document.getElementById('strip');
+  strip.innerHTML='';
+  ['dv','it','ba','ar'].forEach(k=>{
+    const c=document.createElement('span');
+    c.className='chip '+state[k];
+    c.innerHTML=names[k]+' <b>'+state[k]+'</b>';
+    strip.appendChild(c);
+  });
+  const lk=document.createElement('span');
+  lk.className='chip'+(state.leak!=='No'?' ND':'');
+  lk.innerHTML='Leak <b>'+state.leak+'</b>';
+  strip.appendChild(lk);
+}
+syncUI();render();
+
+// ---- catalogue ----
+const grid=document.getElementById('grid');
+const tally=document.getElementById('tally');
+function tcls(t){return t==='Tier 1'?'T1':t==='Tier 2'?'T2':'T3';}
+function renderGrid(filter){
+  grid.innerHTML='';
+  const items=UC.filter(u=>filter==='all'||u.tier===filter);
+  tally.textContent=items.length+' shown';
+  items.forEach(u=>{
+    const c=document.createElement('div');
+    c.className='card';c.tabIndex=0;c.setAttribute('role','button');
+    c.setAttribute('aria-label',u.id+', '+u.tier+', '+u.family);
+    const gsq=['dv','it','ba','ar'].map((k,i)=>{
+      const lab=['DV','IT','BA','AR'][i];
+      return '<div class="gsq '+u[k]+'"><span>'+u[k]+'</span><span class="lab">'+lab+'</span></div>';
+    }).join('');
+    c.innerHTML=
+      '<div class="card-top"><span class="card-id">'+u.id+'</span>'+
+      '<span class="tier-pill '+tcls(u.tier)+'">'+u.tier+'</span></div>'+
+      '<div class="card-body"><div class="card-fam">'+u.family+'</div>'+
+      '<div class="card-tool">'+u.tool+'</div>'+
+      '<div class="card-gates">'+gsq+'</div></div>'+
+      '<div class="card-foot"><span>'+shortSpecies(u.species)+'</span>'+
+      (u.leakStatus!=='No'?'<span class="leak-flag">\u26a0 leakage '+u.leakStatus.toLowerCase()+'</span>':'<span>view detail \u2192</span>')+'</div>';
+    c.onclick=()=>openModal(u);
+    c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openModal(u);}};
+    grid.appendChild(c);
+  });
+}
+function shortSpecies(s){s=s||'';const first=s.split(';')[0];return first.length>34?first.slice(0,32)+'\u2026':first;}
+document.querySelectorAll('.filt').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.filt').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');renderGrid(b.dataset.f);
+  };
+});
+renderGrid('all');
+
+// ---- modal ----
+let lastFocus=null;
+function openModal(u){
+  lastFocus=document.activeElement;
+  const gnames=[['dv','Gate 1 \u00b7 Direct grass validation'],['it','Gate 2 \u00b7 Input transparency'],['ba','Gate 3 \u00b7 Benchmark adequacy'],['ar','Gate 4 \u00b7 Accessibility and reuse']];
+  const gev={dv:u.dv_e,it:u.it_e,ba:u.ba_e,ar:u.ar_e};
+  const scrim=document.createElement('div');
+  scrim.className='scrim';
+  const mg=gnames.map(([k,nm])=>{
+    return '<div class="mgate"><div class="gh"><span class="gn">'+nm+'</span>'+
+      '<span class="gv '+u[k]+'">'+u[k]+'</span></div>'+
+      '<div class="ge">'+(evText(u,k))+'</div></div>';
+  }).join('');
+  scrim.innerHTML=
+    '<div class="modal" role="dialog" aria-modal="true" aria-label="'+u.id+' detail">'+
+    '<div class="modal-head"><div><div class="mid">'+u.id+'</div>'+
+    '<div class="mfam">'+u.family+'</div></div>'+
+    '<button class="xbtn" aria-label="Close">\u2715</button></div>'+
+    '<div class="modal-body">'+
+    '<div class="mbanner '+tcls(u.tier)+'"><div class="bt">'+u.tier+' \u00b7 '+TIER[u.tier].label+'</div>'+
+    '<div class="br">'+u.rationale+'</div></div>'+
+    '<div class="mrow"><div class="k">Tool / resource or study</div><div class="v">'+u.tool+'</div></div>'+
+    '<div class="mrow"><div class="k">Species / evidence domain</div><div class="v">'+u.species+'</div></div>'+
+    '<div class="mrow"><div class="k">Stated task</div><div class="v">'+u.task+'</div></div>'+
+    '<div class="mrow"><div class="k">Intended user action</div><div class="v">'+u.action+'</div></div>'+
+    '<div class="msource"><div class="k">Source &middot; auditable back to origin</div>'+
+    '<div class="src-grid">'+
+    '<div><span class="sl">Citation</span>'+(u.repref||'\u2014')+'</div>'+
+    '<div><span class="sl">DOI / URL</span>'+(u.doi?'<a href="'+u.doi+'" target="_blank" rel="noopener">'+u.doi.replace('https://doi.org/','doi:').replace('https://','')+'</a>':'\u2014')+'</div>'+
+    '<div><span class="sl">Source version</span>'+(u.version||'\u2014')+'</div>'+
+    '<div><span class="sl">Evidence snapshot</span>2026-07-08</div>'+
+    '</div></div>'+
+    '<div class="mgates">'+mg+'</div>'+
+    (u.leakNote?'<div class="mrow"><div class="k">Unresolved leakage</div><div class="v" style="color:var(--nd)">'+u.leakNote+'</div></div>':'')+
+    '<div class="mrow"><div class="k">Main use boundary</div><div class="v">'+u.boundary+'</div></div>'+
+    '<div class="mrow"><div class="k">Requirement for advancement</div><div class="v">'+u.advance+'</div></div>'+
+    '<button class="loadbtn">Load these gates into the assessor \u2192</button>'+
+    '</div></div>';
+  document.body.appendChild(scrim);
+  document.body.style.overflow='hidden';
+  const close=()=>{scrim.remove();document.body.style.overflow='';if(lastFocus)lastFocus.focus();};
+  scrim.querySelector('.xbtn').onclick=close;
+  scrim.onclick=e=>{if(e.target===scrim)close();};
+  scrim.querySelector('.loadbtn').onclick=()=>{
+    Object.assign(state,{dv:u.dv,it:u.it,ba:u.ba,ar:u.ar,leak:u.leakStatus,action:u.actionType});
+    syncUI();render();close();
+    document.getElementById('tab-assess').click();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){close();document.removeEventListener('keydown',esc);}});
+  scrim.querySelector('.xbtn').focus();
+}
+function evText(u,k){
+  const m={dv:'dv_e',it:'it_e',ba:'ba_e',ar:'ar_e'};
+  return u[m[k]]||'\u2014';
+}
+
+// ---- tabs ----
+const tabs=[['tab-assess','p-assess'],['tab-cat','p-cat']];
+tabs.forEach(([tid,pid])=>{
+  document.getElementById(tid).onclick=()=>{
+    tabs.forEach(([t,p])=>{
+      const sel=t===tid;
+      document.getElementById(t).setAttribute('aria-selected',sel?'true':'false');
+      document.getElementById(p).hidden=!sel;
+    });
+  };
+});
+</script>
+</body>
+</html>

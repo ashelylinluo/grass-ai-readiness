@@ -1,0 +1,52 @@
+{
+  "bounded_use_case": {
+    "tool_or_resource": "",
+    "species_or_evidence_domain": "",
+    "stated_task": "",
+    "intended_user_action": "",
+    "assessment_mode": "snapshot_reproduction | current_evidence_reassessment",
+    "evidence_snapshot_date": "YYYY-MM-DD"
+  },
+  "gate_assessment": [
+    {
+      "gate": "Direct grass validation",
+      "rating": "P | Pa | ND",
+      "extracted_evidence": "",
+      "evidence_location": "citation / DOI / page / table / figure / repository",
+      "interpretation": ""
+    },
+    {
+      "gate": "Input transparency",
+      "rating": "P | Pa | ND",
+      "extracted_evidence": "",
+      "evidence_location": "",
+      "interpretation": ""
+    },
+    {
+      "gate": "Benchmark adequacy",
+      "rating": "P | Pa | ND",
+      "extracted_evidence": "",
+      "evidence_location": "",
+      "interpretation": ""
+    },
+    {
+      "gate": "Accessibility and reuse",
+      "rating": "P | Pa | ND",
+      "extracted_evidence": "",
+      "evidence_location": "",
+      "interpretation": ""
+    }
+  ],
+  "decision": {
+    "leakage_status": "No | Yes | Unclear | Not assessed",
+    "action_type": "decision | explore",
+    "rule_triggered": "filled by scripts/assign_tier.py",
+    "assigned_tier": "filled by scripts/assign_tier.py"
+  },
+  "boundary_and_uncertainty": {
+    "supported_use": "",
+    "unsupported_use": "",
+    "missing_or_uncertain_evidence": "",
+    "minimum_evidence_to_advance": ""
+  }
+}

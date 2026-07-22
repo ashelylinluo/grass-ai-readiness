@@ -1,0 +1,19 @@
+id	dv	it	ba	ar	leakage	action	expected_tier
+UC01	P	P	P	Pa	No	decision	Tier 2
+UC02	P	P	Pa	ND	No	decision	Tier 2
+UC03	P	P	Pa	P	No	decision	Tier 2
+UC04	P	P	Pa	Pa	Unclear	decision	Tier 3
+UC05	P	P	Pa	Pa	No	decision	Tier 2
+UC06	P	P	P	Pa	No	decision	Tier 2
+UC07	P	P	P	Pa	No	decision	Tier 2
+UC08	P	P	P	Pa	No	decision	Tier 2
+UC09	ND	P	ND	P	No	explore	Tier 3
+UC10	P	P	P	Pa	No	explore	Tier 2
+UC11	P	P	Pa	P	No	explore	Tier 2
+UC12	P	P	Pa	Pa	No	explore	Tier 2
+UC13	P	P	Pa	P	No	explore	Tier 2
+UC14	P	P	P	P	No	explore	Tier 2
+UC15	P	P	Pa	Pa	No	decision	Tier 2
+UC16	P	P	P	Pa	No	decision	Tier 2
+UC17	Pa	P	Pa	Pa	Unclear	explore	Tier 3
+UC18	P	P	P	P	No	explore	Tier 2
