@@ -164,12 +164,24 @@ Tiers 是快照。随着证据、代码或 benchmarks 变化，tier 也可能移
 
 ---
 
-## 稿件 Data availability statement 建议用语
 
-> The literature-mapping records and supplementary assessment data are archived on Zenodo (doi:10.5281/zenodo.20825481). The executable companion to the readiness framework is publicly available in the project repository and archived as a versioned software release on Zenodo (doi:[SOFTWARE DOI]). The release includes the manuscript-defined four-gate rubric and 18 expert-curated reference use-case assessments, a browser-based interactive assessor, deterministic tier-assignment scripts, synthetic boundary tests, and an Agent Skill for evaluating new use cases.
 
-*Replace `[SOFTWARE DOI]` with the DOI minted for the GitHub release before inserting this statement into the manuscript.*
+## 数据与资源获取
 
-以下中文仅供作者内部沟通，正式论文请使用上方英文版本。
+支持本综述的文献映射记录和补充评估数据已公开归档于 Zenodo：
 
-上述 Data availability 建议句说明：文献映射记录和补充评估数据已经以 Zenodo 记录（doi:10.5281/zenodo.20825481）归档；证据成熟度框架的可执行配套资源将在项目仓库公开，并在 GitHub release 归档到 Zenodo 后形成带版本的软件发布记录。该发布包含稿件定义的框架（manuscript-defined framework）中的四门评价准则、18 个 expert-curated reference use-case assessments、浏览器交互式评估器、确定性 tier 分配脚本、synthetic boundary tests，以及用于评估新用例的 Agent Skill（智能体技能）。在正式稿件中使用前，请将 `[SOFTWARE DOI]` 替换为 GitHub release 对应的 Zenodo 软件 DOI。
+* Zenodo：https://doi.org/10.5281/zenodo.20825481
+
+证据成熟度框架的可执行配套资源已公开于本项目仓库，包括：
+
+* 稿件定义的四门评价准则；
+* 18 个专家整理的参考用例评估；
+* 浏览器交互式评估器；
+* 确定性的 Tier 分配脚本；
+* 覆盖全部决策规则路径的合成边界测试；
+* 用于评估新用例的 Agent Skill（智能体技能）。
+
+项目仓库：
+
+* GitHub：https://github.com/ashelylinluo/grass-ai-readiness
+
