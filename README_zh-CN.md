@@ -58,7 +58,7 @@ python grass-ai-readiness/scripts/assign_tier.py \
 
 ### 2. 交互式评估器 — `grass-ai-readiness-assessor.html`
 
-[打开交互式评估器](https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html)。
+仓库启用 GitHub Pages 后，可在 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html> 打开交互式评估器。
 
 一个单文件、自包含的网页（无需服务器、无需依赖；用任意浏览器打开即可）。设置四个证据门评级、leakage 状态和 action type 后，tier 会实时更新，并高亮显示**触发了哪条决策规则**。它包含全部 18 个 reference cases，并附有逐门证据摘要和来源细节（citation、DOI、version、snapshot date），因此每个案例都可追溯到其来源，也可按 tier 浏览和筛选。它最适合希望查看逻辑并检查参考案例的人工用户。
 
@@ -90,7 +90,7 @@ grass-ai-readiness/
 
 ### 交互式评估器
 
-打开托管页面 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>；也可以下载 `grass-ai-readiness-assessor.html` 后在浏览器中打开。无需安装任何内容。
+启用 GitHub Pages 后，可打开托管页面 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>；也可以下载 `grass-ai-readiness-assessor.html` 后在浏览器中打开。无需安装任何内容。
 
 ### 直接使用 tier 引擎
 

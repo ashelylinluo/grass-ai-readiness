@@ -56,7 +56,7 @@ Three artifacts, in increasing order of automation:
 The definitions themselves: the four gate criteria (Pass / Partial / Not demonstrated), the leakage and action-type rules, the ordered decision rules, and the 18 expert-curated reference assessments (UC01–UC18) with their per-gate evidence. This is the source of truth; the other two artifacts operationalize it.
 
 ### 2. Interactive assessor — `grass-ai-readiness-assessor.html`
-[Open the interactive assessor](https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html).
+After GitHub Pages is enabled for this repository, open the interactive assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>.
 
 A single self-contained web page (no server, no dependencies — open it in any browser). Set the four gate ratings, the leakage status, and the action type; the tier updates live and highlights **which decision rule fired**. Includes all 18 reference cases with per-gate evidence summaries and source details (citation, DOI, version, snapshot date) so each case is traceable back to its origin, browsable and filterable by tier. Best for humans who want to see the logic and inspect the reference cases.
 
@@ -86,7 +86,7 @@ A packaged `grass-ai-readiness.skill` file is also provided for one-click import
 ## Using each artifact
 
 ### The interactive assessor
-Open the hosted assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>, or download `grass-ai-readiness-assessor.html` and open it in a browser. Nothing to install.
+After GitHub Pages is enabled, open the hosted assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>, or download `grass-ai-readiness-assessor.html` and open it in a browser. Nothing to install.
 
 ### The tier engine, directly
 The decision rules run as a standalone script — useful for scripting or verification:
