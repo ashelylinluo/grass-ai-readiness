@@ -4,7 +4,7 @@
 
 [![tests](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml/badge.svg)](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml)
 
-This repository accompanies the manuscript *"AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions"* (Luo L, Sun Z, Lin Z, et al.). It provides an executable implementation of the readiness framework so that readers can inspect the manuscript-reported reference assessments and apply the same rubric to new use cases.
+This repository accompanies the manuscript *"AI-driven grass genomics: an evidence-guided roadmap from bioinformatics resources to breeding decisions"* (Luo L, Sun Z, Lin Z, et al.). It provides an executable implementation of the readiness framework so that readers can inspect the manuscript-reported reference assessments and apply the same rubric to new use cases.
 
 The framework asks a single question about any AI or bioinformatics result in grass/Poaceae genomics: **can it support a decision, only guide a hypothesis, or does it still need benchmarking?** A tool is not ready because it scores well — it is ready only when the evidence holds for the exact species, task, and user action claimed. Readiness is assigned as a use-case-specific **tier**:
 
@@ -56,10 +56,12 @@ Three artifacts, in increasing order of automation:
 The definitions themselves: the four gate criteria (Pass / Partial / Not demonstrated), the leakage and action-type rules, the ordered decision rules, and the 18 expert-curated reference assessments (UC01–UC18) with their per-gate evidence. This is the source of truth; the other two artifacts operationalize it.
 
 ### 2. Interactive assessor — `grass-ai-readiness-assessor.html`
+[Open the interactive assessor](https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html).
+
 A single self-contained web page (no server, no dependencies — open it in any browser). Set the four gate ratings, the leakage status, and the action type; the tier updates live and highlights **which decision rule fired**. Includes all 18 reference cases with per-gate evidence summaries and source details (citation, DOI, version, snapshot date) so each case is traceable back to its origin, browsable and filterable by tier. Best for humans who want to see the logic and inspect the reference cases.
 
 ### 3. Agent skill — `grass-ai-readiness/`
-An [Agent Skill](https://agentskills.io/specification) that lets an AI assistant apply the rubric to **new** use cases, not just reproduce the 18. The assistant reads the evidence and rates the four gates; a deterministic script assigns the tier by fixed rules, so the outcome does not depend on model judgment. Best for assessing a tool the manuscript did not cover.
+An [Agent Skill](https://agentskills.io/specification) that lets an AI assistant apply the rubric to **new** use cases, not just reproduce the 18. The assistant reads the evidence and rates the four gates; once the gate ratings, leakage status, and action type are fixed, a deterministic script assigns the tier using ordered rules. Best for assessing a tool the manuscript did not cover.
 
 ```
 grass-ai-readiness/
@@ -84,7 +86,7 @@ A packaged `grass-ai-readiness.skill` file is also provided for one-click import
 ## Using each artifact
 
 ### The interactive assessor
-Open `grass-ai-readiness-assessor.html` in a browser. Nothing to install.
+Open the hosted assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>, or download `grass-ai-readiness-assessor.html` and open it in a browser. Nothing to install.
 
 ### The tier engine, directly
 The decision rules run as a standalone script — useful for scripting or verification:
@@ -149,6 +151,8 @@ Code and the interactive assessor are released under the MIT License (see `LICEN
 If you use this framework or its implementation, please cite the archived record (see also `CITATION.cff`):
 
 > Luo L, Sun Z, Lin Z, et al. Supplementary data and literature-mapping records for "AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions". Zenodo, 2026. doi:10.5281/zenodo.20825481
+
+*The title in the data-record citation above follows the current Zenodo metadata for that DOI; the manuscript title used at the top of this README reflects the current manuscript title.*
 
 *The DOI above points to the existing data record. A separate software DOI for this executable companion will be minted when the GitHub release is archived to Zenodo; update the DOI here, in the HTML, and in `CITATION.cff` at that point.*
 

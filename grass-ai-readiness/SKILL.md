@@ -16,7 +16,7 @@ Read the reference files rather than working from memory; run the scripts rather
 - **`references/rubric-definitions.md`** — the exact P/Pa/ND definitions for each gate, the leakage and action-type rules, and the ordered decision rules. **Read this every time before rating gates.**
 - **`references/anchor-cases.md`** — the 18 expert-curated reference assessments (UC01–UC18) reported in the manuscript, with per-gate evidence and source locations. Use them as calibration.
 - **`references/synthetic-boundary-tests.md`** — constructed rows (not literature cases) that exercise every decision rule, including the two that no real case reaches (Rule 3 and Rule 6/Tier 1).
-- **`scripts/assign_tier.py`** — assigns the tier from the six inputs by fixed rules. **Always use this for the tier**, so the outcome is deterministic and not a model judgment.
+- **`scripts/assign_tier.py`** — assigns the tier from the six inputs by fixed rules. **Always use this for final tier assignment once the gate ratings, leakage status, and action type are fixed.**
 - **`scripts/validate_assessment.py`** — checks a completed assessment for internal consistency (every gate has evidence + a location; recorded tier matches the rules) and reproduces the reference sets.
 - **`assets/assessment-template.json`** — the fillable structured-output template; complete it and validate it.
 
@@ -98,4 +98,4 @@ Then run `python scripts/validate_assessment.py <your.json>` to confirm every ga
 
 ## Attribution
 
-This skill operationalizes the readiness framework of Luo L, Sun Z, Lin Z, et al., "AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions" (the accompanying manuscript; supplementary materials archived on Zenodo, doi:10.5281/zenodo.20825481, CC-BY-4.0 data / MIT scripts). The 18 reference assessments are expert-curated, not independently re-validated. Assessments produced with this skill are interpretive aids, not authoritative endorsements, and should be checked against current evidence.
+This skill operationalizes the readiness framework of Luo L, Sun Z, Lin Z, et al., "AI-driven grass genomics: an evidence-guided roadmap from bioinformatics resources to breeding decisions" (the accompanying manuscript; supplementary materials archived on Zenodo, doi:10.5281/zenodo.20825481, CC-BY-4.0 data / MIT scripts). The 18 reference assessments are expert-curated, not independently re-validated. Assessments produced with this skill are interpretive aids, not authoritative endorsements, and should be checked against current evidence.

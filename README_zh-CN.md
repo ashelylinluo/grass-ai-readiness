@@ -4,7 +4,7 @@
 
 [![tests](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml/badge.svg)](https://github.com/ashelylinluo/grass-ai-readiness/actions/workflows/test.yml)
 
-本仓库配套稿件 *"AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions"*（Luo L, Sun Z, Lin Z, et al.）。它提供了证据成熟度框架的可执行实现，使读者能够检查稿件报告的参考评估，并将同一套评价准则应用到新的用例。
+本仓库配套稿件 *"AI-driven grass genomics: an evidence-guided roadmap from bioinformatics resources to breeding decisions"*（Luo L, Sun Z, Lin Z, et al.）。它提供了证据成熟度框架的可执行实现，使读者能够检查稿件报告的参考评估，并将同一套评价准则应用到新的用例。
 
 该框架围绕草类/禾本科（grass/Poaceae）基因组学中的任何 AI 或生物信息学结果提出一个核心问题：**它能支持一项决策、只能指导一个假设，还是仍然需要基准验证？** 一个工具并不是因为总体表现好就已经“就绪”；只有当证据确实支撑其所声称的具体物种、任务和用户行动时，才可认为它达到相应成熟度。成熟度以特定用例为单位分配为 **tier**：
 
@@ -58,11 +58,13 @@ python grass-ai-readiness/scripts/assign_tier.py \
 
 ### 2. 交互式评估器 — `grass-ai-readiness-assessor.html`
 
+[打开交互式评估器](https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html)。
+
 一个单文件、自包含的网页（无需服务器、无需依赖；用任意浏览器打开即可）。设置四个证据门评级、leakage 状态和 action type 后，tier 会实时更新，并高亮显示**触发了哪条决策规则**。它包含全部 18 个 reference cases，并附有逐门证据摘要和来源细节（citation、DOI、version、snapshot date），因此每个案例都可追溯到其来源，也可按 tier 浏览和筛选。它最适合希望查看逻辑并检查参考案例的人工用户。
 
 ### 3. Agent Skill（智能体技能）— `grass-ai-readiness/`
 
-一个 [Agent Skill](https://agentskills.io/specification)，可让 AI assistant 将评价准则应用于**新的**用例，而不仅仅是复现这 18 个参考案例。assistant 读取证据并为四个 evidence gates 评级；确定性脚本依据固定规则分配 tier，因此结果不依赖模型的主观判断。它最适合评估稿件未覆盖的工具。
+一个 [Agent Skill](https://agentskills.io/specification)，可让 AI assistant 将评价准则应用于**新的**用例，而不仅仅是复现这 18 个参考案例。assistant 读取证据并为四个 evidence gates 评级；一旦 gate ratings、leakage status 和 action type 固定，确定性脚本就会使用有序规则分配 tier。它最适合评估稿件未覆盖的工具。
 
 ```
 grass-ai-readiness/
@@ -88,7 +90,7 @@ grass-ai-readiness/
 
 ### 交互式评估器
 
-在浏览器中打开 `grass-ai-readiness-assessor.html`。无需安装任何内容。
+打开托管页面 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>；也可以下载 `grass-ai-readiness-assessor.html` 后在浏览器中打开。无需安装任何内容。
 
 ### 直接使用 tier 引擎
 
@@ -155,6 +157,8 @@ Tiers 是快照。随着证据、代码或 benchmarks 变化，tier 也可能移
 如果使用本框架或其实现，请引用已归档记录（另见 `CITATION.cff`）：
 
 > Luo L, Sun Z, Lin Z, et al. Supplementary data and literature-mapping records for "AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions". Zenodo, 2026. doi:10.5281/zenodo.20825481
+
+*上方数据记录引用中的题名遵循该 DOI 当前的 Zenodo 元数据；本 README 开头使用的是当前 manuscript title。*
 
 *上述 DOI 指向现有的数据记录。该可执行配套资源的独立软件 DOI 将在 GitHub release 归档到 Zenodo 时生成；届时请同步更新此处、HTML 和 `CITATION.cff` 中的 DOI。*
 
