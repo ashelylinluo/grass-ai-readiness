@@ -58,7 +58,9 @@ python grass-ai-readiness/scripts/assign_tier.py \
 
 ### 2. 交互式评估器 — `grass-ai-readiness-assessor.html`
 
-仓库启用 GitHub Pages 后，可在 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html> 打开交互式评估器。
+在线交互式评估器：
+
+<https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>
 
 一个单文件、自包含的网页（无需服务器、无需依赖；用任意浏览器打开即可）。设置四个证据门评级、leakage 状态和 action type 后，tier 会实时更新，并高亮显示**触发了哪条决策规则**。它包含全部 18 个 reference cases，并附有逐门证据摘要和来源细节（citation、DOI、version、snapshot date），因此每个案例都可追溯到其来源，也可按 tier 浏览和筛选。它最适合希望查看逻辑并检查参考案例的人工用户。
 
@@ -90,7 +92,11 @@ grass-ai-readiness/
 
 ### 交互式评估器
 
-启用 GitHub Pages 后，可打开托管页面 <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>；也可以下载 `grass-ai-readiness-assessor.html` 后在浏览器中打开。无需安装任何内容。
+在线交互式评估器：
+
+<https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>
+
+也可以下载 `grass-ai-readiness-assessor.html` 后在浏览器中打开。无需安装任何内容。
 
 ### 直接使用 tier 引擎
 
@@ -150,38 +156,55 @@ Tiers 是快照。随着证据、代码或 benchmarks 变化，tier 也可能移
 
 ## Licence
 
-代码和交互式评估器以 MIT License 发布（见 `LICENSE`）。参考评估、rubric 文本和表格数据以 CC BY 4.0 发布（见 `LICENSE-DATA`）。
+`LICENSE` 中只保留标准 MIT License 文本，以便 GitHub 正确识别软件许可证。该许可证适用于本仓库的软件组件，包括 Python 脚本、浏览器交互式评估器和 Agent Skill（智能体技能）打包文件。
+
+readiness rubric 文本、18 个 reference use-case assessments、synthetic boundary tests、表格数据以及派生评估内容以 CC BY 4.0 发布（见 `LICENSE-DATA`）。
+
+## 相关资源
+
+* **可执行 readiness framework：**
+  https://github.com/ashelylinluo/grass-ai-readiness
+
+* **在线交互式评估器：**
+  https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html
+
+* **已归档的 literature-mapping records 和 supplementary assessment data：**
+  https://doi.org/10.5281/zenodo.20825481
+
+* **持续更新的 agricultural and plant AI models 目录：**
+  https://github.com/ashelylinluo/Awesome-agricultural-plant-llms
 
 ## Citation
 
-如果使用本框架或其实现，请引用已归档记录（另见 `CITATION.cff`）：
+如果使用这个可执行配套资源，请引用仓库 URL 和关联论文：
 
-> Luo L, Sun Z, Lin Z, et al. Supplementary data and literature-mapping records for "AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions". Zenodo, 2026. doi:10.5281/zenodo.20825481
+> Luo L, Sun Z, Lin Z, et al. AI-driven grass genomics: an evidence-guided roadmap from bioinformatics resources to breeding decisions.
 
-*上方数据记录引用中的题名遵循该 DOI 当前的 Zenodo 元数据；本 README 开头使用的是当前 manuscript title。*
+软件仓库：
 
-*上述 DOI 指向现有的数据记录。该可执行配套资源的独立软件 DOI 将在 GitHub release 归档到 Zenodo 时生成；届时请同步更新此处、HTML 和 `CITATION.cff` 中的 DOI。*
+<https://github.com/ashelylinluo/grass-ai-readiness>
+
+数据归档 DOI `10.5281/zenodo.20825481` 仅指向 literature-mapping records、supplementary assessment data、reference crosswalk 和 metadata-curation records，不代表本软件仓库、HTML 评估器、Python 脚本或 Agent Skill（智能体技能）。
 
 ---
 
-
-
 ## 数据与资源获取
 
-支持本综述的文献映射记录和补充评估数据已公开归档于 Zenodo：
+支持本综述的文献映射记录和补充评估数据可通过 Zenodo 获取：
 
 * Zenodo：https://doi.org/10.5281/zenodo.20825481
 
-证据成熟度框架的可执行配套资源已公开于本项目仓库，包括：
+证据成熟度框架的可执行配套资源已公开于本项目仓库，在线交互式评估器可通过 GitHub Pages 访问：
+
+* GitHub：https://github.com/ashelylinluo/grass-ai-readiness
+* 交互式评估器：https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html
+
+仓库包括：
 
 * 稿件定义的四门评价准则；
 * 18 个专家整理的参考用例评估；
 * 浏览器交互式评估器；
 * 确定性的 Tier 分配脚本；
+* validation scripts；
 * 覆盖全部决策规则路径的合成边界测试；
 * 用于评估新用例的 Agent Skill（智能体技能）。
-
-项目仓库：
-
-* GitHub：https://github.com/ashelylinluo/grass-ai-readiness
-

@@ -1,11 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Lin Luo and the AI-driven grass genomics author team
-
-This licence applies to the software components of this repository: the
-Python scripts (scripts/) and the interactive assessor (the HTML file).
-The reference assessments, rubric text, and tabular data are licensed
-separately under CC BY 4.0 — see LICENSE-DATA.
+Copyright (c) 2026 Lin Luo and contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

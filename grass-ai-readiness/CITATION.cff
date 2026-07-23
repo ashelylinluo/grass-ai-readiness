@@ -1,10 +1,10 @@
 cff-version: 1.2.0
 title: >-
-  Grass AI-genomics readiness framework — executable companion
+  AI-driven grass genomics: an evidence-guided roadmap from bioinformatics
+  resources to breeding decisions
 message: >-
-  If you use this framework or its implementation, please cite this software.
-  A versioned software DOI will be added after the GitHub release is archived
-  on Zenodo; the related supplementary-data record is doi:10.5281/zenodo.20825481.
+  If you use this executable companion, please cite the associated manuscript
+  and cite the software repository: https://github.com/ashelylinluo/grass-ai-readiness.
 type: software
 authors:
   - given-names: Lin

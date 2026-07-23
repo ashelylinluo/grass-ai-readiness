@@ -56,7 +56,9 @@ Three artifacts, in increasing order of automation:
 The definitions themselves: the four gate criteria (Pass / Partial / Not demonstrated), the leakage and action-type rules, the ordered decision rules, and the 18 expert-curated reference assessments (UC01–UC18) with their per-gate evidence. This is the source of truth; the other two artifacts operationalize it.
 
 ### 2. Interactive assessor — `grass-ai-readiness-assessor.html`
-After GitHub Pages is enabled for this repository, open the interactive assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>.
+Open the hosted interactive assessor:
+
+<https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>
 
 A single self-contained web page (no server, no dependencies — open it in any browser). Set the four gate ratings, the leakage status, and the action type; the tier updates live and highlights **which decision rule fired**. Includes all 18 reference cases with per-gate evidence summaries and source details (citation, DOI, version, snapshot date) so each case is traceable back to its origin, browsable and filterable by tier. Best for humans who want to see the logic and inspect the reference cases.
 
@@ -86,7 +88,11 @@ A packaged `grass-ai-readiness.skill` file is also provided for one-click import
 ## Using each artifact
 
 ### The interactive assessor
-After GitHub Pages is enabled, open the hosted assessor at <https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>, or download `grass-ai-readiness-assessor.html` and open it in a browser. Nothing to install.
+Open the hosted interactive assessor:
+
+<https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html>
+
+You can also download `grass-ai-readiness-assessor.html` and open it in a browser. Nothing to install.
 
 ### The tier engine, directly
 The decision rules run as a standalone script — useful for scripting or verification:
@@ -144,29 +150,48 @@ Tiers are snapshots. A tier can move as evidence, code, or benchmarks change; re
 
 ## Licence
 
-Code and the interactive assessor are released under the MIT License (see `LICENSE`). Reference assessments, rubric text, and tabular data are released under CC BY 4.0 (see `LICENSE-DATA`).
+The standard MIT License text is provided in `LICENSE` so GitHub can identify the software licence correctly. It applies to the software components of this repository, including the Python scripts, the browser-based interactive assessor, and the Agent Skill packaging.
+
+The readiness rubric text, 18 reference use-case assessments, synthetic boundary tests, tabular data, and derived assessment content are released under CC BY 4.0 (see `LICENSE-DATA`).
+
+## Related resources
+
+* **Executable readiness framework:**
+  https://github.com/ashelylinluo/grass-ai-readiness
+
+* **Hosted interactive assessor:**
+  https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html
+
+* **Archived literature-mapping records and supplementary assessment data:**
+  https://doi.org/10.5281/zenodo.20825481
+
+* **Continuously updated catalogue of agricultural and plant AI models:**
+  https://github.com/ashelylinluo/Awesome-agricultural-plant-llms
 
 ## Citation
 
-If you use this framework or its implementation, please cite the archived record (see also `CITATION.cff`):
+If you use this executable companion, please cite the repository URL and the associated manuscript:
 
-> Luo L, Sun Z, Lin Z, et al. Supplementary data and literature-mapping records for "AI-driven grass genomics: a user-centric and evidence-guided roadmap from bioinformatics resources to breeding decisions". Zenodo, 2026. doi:10.5281/zenodo.20825481
+> Luo L, Sun Z, Lin Z, et al. AI-driven grass genomics: an evidence-guided roadmap from bioinformatics resources to breeding decisions.
 
-*The title in the data-record citation above follows the current Zenodo metadata for that DOI; the manuscript title used at the top of this README reflects the current manuscript title.*
+Software repository:
 
-*The DOI above points to the existing data record. A separate software DOI for this executable companion will be minted when the GitHub release is archived to Zenodo; update the DOI here, in the HTML, and in `CITATION.cff` at that point.*
+<https://github.com/ashelylinluo/grass-ai-readiness>
+
+The data archive DOI `10.5281/zenodo.20825481` refers to the literature-mapping records, supplementary assessment data, reference crosswalk, and metadata-curation records, not to this software repository, the HTML assessor, the Python scripts, or the Agent Skill.
 
 ---
 
 ## Availability
 
-The literature-mapping records and supplementary assessment data supporting the review are archived on Zenodo at https://doi.org/10.5281/zenodo.20825481.
+The literature-mapping records and supplementary assessment data supporting the review are available from Zenodo at https://doi.org/10.5281/zenodo.20825481.
 
-The executable companion to the readiness framework is publicly available in this repository. It includes:
+The executable companion to the readiness framework is publicly available in this repository, and the hosted interactive assessor is available at https://ashelylinluo.github.io/grass-ai-readiness/grass-ai-readiness-assessor.html. The repository includes:
 
 * the manuscript-defined four-gate rubric;
 * 18 expert-curated reference use-case assessments;
 * a browser-based interactive assessor;
 * deterministic tier-assignment scripts;
+* validation scripts;
 * synthetic boundary tests covering all decision-rule paths; and
 * an Agent Skill for evaluating new use cases.
